@@ -30,8 +30,8 @@ public class UserCreate implements Serializable {
     @Column(nullable = false)
     private String email;
 
-    @OneToMany(mappedBy = "userCreate")
-    private List<Order> orders = new ArrayList<>();
+//    @OneToMany(mappedBy = "userCreate")
+//    private List<Order> orders = new ArrayList<>();
 
 
 }

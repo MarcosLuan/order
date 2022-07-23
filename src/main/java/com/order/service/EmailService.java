@@ -23,7 +23,7 @@ public class EmailService {
 
         message.setTo(orderDetails.getUserCreate().getEmail());
         message.setSubject("Order Movement");
-        message.setText("The order code"+ orderDetails.getId() + " was successfully completed!");
+        message.setText("The order code "+ orderDetails.getId() + " was successfully completed!");
         javaMailSender.send(message);
         log.info("E-mail successfully sent");
     }
