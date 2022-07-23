@@ -39,7 +39,7 @@ public class OrderService implements OrderServiceInterface {
 
         if (orderDetails.getSituation().equals(SituationEnum.COMPLETED)) {
             updateOrder.setSituation(SituationEnum.COMPLETED);
-//            emailService.sendEmail(orderDetails);
+            emailService.sendEmail(orderDetails);
         }
 
         orderRepository.save(updateOrder);

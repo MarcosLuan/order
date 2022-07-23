@@ -1,12 +1,14 @@
 package com.order.service;
 
 import com.order.model.Order;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
 @Service
+@Slf4j
 public class EmailService {
 
     @Autowired
@@ -20,29 +22,9 @@ public class EmailService {
         SimpleMailMessage message = new SimpleMailMessage();
 
         message.setTo(orderDetails.getUserCreate().getEmail());
-        message.setSubject(""); //title
-        message.setText(""); //content
+        message.setSubject("Order Movement");
+        message.setText("The order code"+ orderDetails.getId() + " was successfully completed!");
         javaMailSender.send(message);
-
+        log.info("E-mail successfully sent");
     }
-
-//    public JavaMailSender sendEmail(UserCreate user) {
-//        JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
-//        mailSender.setHost("smtp.gmail.com");
-//        mailSender.setPort(587);
-//
-//        mailSender.setUsername("my.gmail@gmail.com");
-//        mailSender.setPassword("password");
-//
-//        Properties props = mailSender.getJavaMailProperties();
-//        props.put("mail.transport.protocol", "smtp");
-//        props.put("mail.smtp.auth", "true");
-//        props.put("mail.smtp.starttls.enable", "true");
-//        props.put("mail.debug", "true");
-//
-//        return mailSender;
-//
-//    }
-
-
 }
