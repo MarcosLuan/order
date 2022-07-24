@@ -46,11 +46,6 @@ To run this project on your machine, have the necessary java packages installed 
 After cloning the project, open it in your favorite development environment, start the project and wait for the dependencies to be installed.
 All dependencies in pom.xml are necessary for correct operation.
 
-## ⚙ Tests
-
-The tests are located in the directory: order\src\test.
-Tests can be run normally in your development environment as per your local settings.
-
 ## 🔩 Swagger
 Access the path with the project running:
 http://localhost:8080/swagger-ui.html

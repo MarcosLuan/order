@@ -4,11 +4,11 @@ import com.order.Enum.SituationEnum;
 import com.order.exception.ResourceNotFoundException;
 import com.order.model.Order;
 import com.order.model.Stock;
-import com.order.repository.ItemRepository;
+import com.order.model.StockMovement;
 import com.order.repository.OrderRepository;
+import com.order.repository.StockMovementRepository;
 import com.order.repository.StockRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -29,26 +29,8 @@ public class OrderService implements OrderServiceInterface {
     @Autowired
     private EmailService emailService;
 
-    public Order completeOrder(Order orderDetails) {
-        Order updateOrder = orderRepository.findById(orderDetails.getId())
-                .orElseThrow(() -> new ResourceNotFoundException("Order not exist with id: " + orderDetails.getId()));
-
-        updateOrder.setItem(orderDetails.getItem());
-        updateOrder.setQuantity(orderDetails.getQuantity());
-        updateOrder.setUserCreate(orderDetails.getUserCreate());
-        updateOrder.setSituation(SituationEnum.COMPLETED);
-        emailService.sendEmail(updateOrder);
-
-        orderRepository.save(updateOrder);
-
-        if (orderDetails.getQuantity() > updateOrder.getQuantity()) {
-            stockService.stockChangeOutput(orderDetails.getQuantity() - updateOrder.getQuantity(), updateOrder.getItem());
-        } else if (orderDetails.getQuantity() < updateOrder.getQuantity()) {
-            stockService.stockChangeInput(updateOrder.getQuantity() - orderDetails.getQuantity(), updateOrder.getItem());
-        }
-
-        return updateOrder;
-    }
+    @Autowired
+    private StockMovementRepository stockMovementRepository;
 
     public Order newOrder(Order order) {
         List<Stock> stock = stockRepository.findByItem(order.getItem());
@@ -68,7 +50,29 @@ public class OrderService implements OrderServiceInterface {
         orderRepository.save(newOrder);
         stockService.stockChangeOutput(order.getQuantity(), order.getItem());
 
+        StockMovement newMovement = new StockMovement();
+        newMovement.setCreationDate(LocalDate.now());
+        newMovement.setItem(order.getItem());
+        newMovement.setQuantity("removed " + order.getQuantity() + " piece(s) from stock");
+        stockMovementRepository.save(newMovement);
+
         return newOrder;
+    }
+
+    public Order completeOrder(Order orderDetails) {
+        Order completeOrder = orderRepository.findById(orderDetails.getId())
+                .orElseThrow(() -> new ResourceNotFoundException("Order not exist with id: " + orderDetails.getId()));
+
+        if (orderDetails.getSituation().equals(SituationEnum.CANCELED)) {
+            new ResourceNotFoundException("The order is already canceled!");
+        }
+
+        completeOrder.setSituation(SituationEnum.COMPLETED);
+        emailService.sendEmail(completeOrder);
+
+        orderRepository.save(completeOrder);
+
+        return completeOrder;
     }
 
     @Override
@@ -84,6 +88,12 @@ public class OrderService implements OrderServiceInterface {
 
         stockService.stockChangeInput(orderDetails.getQuantity(), updateOrder.getItem());
 
+        StockMovement newMovement = new StockMovement();
+        newMovement.setCreationDate(LocalDate.now());
+        newMovement.setItem(orderDetails.getItem());
+        newMovement.setQuantity("added " + orderDetails.getQuantity() + " piece(s) in stock");
+        stockMovementRepository.save(newMovement);
+
         return updateOrder;
     }
 
@@ -93,5 +103,43 @@ public class OrderService implements OrderServiceInterface {
 
         orderRepository.delete(deleteOrder);
         stockService.stockChangeInput(deleteOrder.getQuantity(), order.getItem());
+    }
+
+    public Order updateOrder(Order orderDetails) {
+        Order updateOrder = orderRepository.findById(orderDetails.getId())
+                .orElseThrow(() -> new ResourceNotFoundException("Order not exist with id: " + orderDetails.getId()));
+
+        if (orderDetails.getSituation().equals(SituationEnum.CANCELED)) {
+            new ResourceNotFoundException("The order is already canceled!");
+        }
+
+        if (orderDetails.getSituation().equals(SituationEnum.COMPLETED)) {
+            new ResourceNotFoundException("The order is already completed!");
+        }
+
+        if (orderDetails.getQuantity() > updateOrder.getQuantity()) {
+            stockService.stockChangeOutput(orderDetails.getQuantity() - updateOrder.getQuantity(), updateOrder.getItem());
+
+            StockMovement newMovement = new StockMovement();
+            newMovement.setCreationDate(LocalDate.now());
+            newMovement.setItem(orderDetails.getItem());
+            newMovement.setQuantity("removed " + (orderDetails.getQuantity() - updateOrder.getQuantity()) + " piece(s) from stock");
+            stockMovementRepository.save(newMovement);
+        } else if (orderDetails.getQuantity() < updateOrder.getQuantity()) {
+            stockService.stockChangeInput(updateOrder.getQuantity() - orderDetails.getQuantity(), updateOrder.getItem());
+
+            StockMovement newMovement = new StockMovement();
+            newMovement.setCreationDate(LocalDate.now());
+            newMovement.setItem(orderDetails.getItem());
+            newMovement.setQuantity("added " + (updateOrder.getQuantity() - orderDetails.getQuantity()) + " piece(s) in stock");
+            stockMovementRepository.save(newMovement);
+        }
+
+        updateOrder.setItem(orderDetails.getItem());
+        updateOrder.setQuantity(orderDetails.getQuantity());
+        updateOrder.setUserCreate(orderDetails.getUserCreate());
+        orderRepository.save(updateOrder);
+
+        return updateOrder;
     }
 }

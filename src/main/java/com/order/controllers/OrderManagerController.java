@@ -35,11 +35,6 @@ public class OrderManagerController {
         return ResponseEntity.ok(orderService.newOrder(order));
     }
 
-    @RequestMapping(value = "/delete-order", method = RequestMethod.DELETE, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public void deleteOrder(@RequestBody Order order) {
-        orderService.deleteOrder(order);
-    }
-
     @RequestMapping(value ="/complete-order", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Order> completeOrder(@RequestBody Order orderDetails) {
         return ResponseEntity.ok(orderService.completeOrder(orderDetails));
@@ -48,6 +43,16 @@ public class OrderManagerController {
     @RequestMapping(value ="/cancel-order", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Order> cancelOrder(@RequestBody Order orderDetails) {
         return ResponseEntity.ok(orderService.cancelOrder(orderDetails));
+    }
+
+    @RequestMapping(value = "/delete-order", method = RequestMethod.DELETE, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public void deleteOrder(@RequestBody Order order) {
+        orderService.deleteOrder(order);
+    }
+
+    @RequestMapping(value ="/update-order", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Order> updateOrder(@RequestBody Order orderDetails) {
+        return ResponseEntity.ok(orderService.updateOrder(orderDetails));
     }
 }
 
