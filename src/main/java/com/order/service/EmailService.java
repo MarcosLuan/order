@@ -1,5 +1,6 @@
 package com.order.service;
 
+import com.order.Enum.SituationEnum;
 import com.order.model.Order;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,8 +24,22 @@ public class EmailService {
 
         message.setTo(orderDetails.getUserCreate().getEmail());
         message.setSubject("Order Movement");
-        message.setText("The order code "+ orderDetails.getId() + " was successfully completed!");
+        if(orderDetails.getSituation().equals(SituationEnum.COMPLETED)) {
+            message.setText(messageToEmail(orderDetails));
+        }
+        if (orderDetails.getSituation().equals(SituationEnum.CANCELED)) {
+            message.setText("The order code "+ orderDetails.getId() + " was Canceled!");
+        }
+
         javaMailSender.send(message);
         log.info("E-mail successfully sent");
+    }
+
+    public static String messageToEmail(Order orderDetails) {
+        return "The order code "+ orderDetails.getId() + " was successfully completed! \n\n"
+                + "Item: " + orderDetails.getItem().getName() + "\n"
+                + "Quantity: " + orderDetails.getQuantity() + "\n"
+                + "User: " + orderDetails.getUserCreate().getName() + "\n"
+                + "Date Creation: " + orderDetails.getCreationDate() + "\n\n";
     }
 }

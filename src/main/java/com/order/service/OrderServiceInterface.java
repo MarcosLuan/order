@@ -5,7 +5,9 @@ import org.springframework.http.ResponseEntity;
 
 public interface OrderServiceInterface {
 
-    Order orderChange(Order id);
+    Order completeOrder(Order order);
+
+    Order cancelOrder(Order order);
 
     Order newOrder(Order order);
 

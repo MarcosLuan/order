@@ -29,18 +29,15 @@ public class OrderService implements OrderServiceInterface {
     @Autowired
     private EmailService emailService;
 
-    public Order orderChange(Order orderDetails) {
+    public Order completeOrder(Order orderDetails) {
         Order updateOrder = orderRepository.findById(orderDetails.getId())
                 .orElseThrow(() -> new ResourceNotFoundException("Order not exist with id: " + orderDetails.getId()));
 
         updateOrder.setItem(orderDetails.getItem());
         updateOrder.setQuantity(orderDetails.getQuantity());
         updateOrder.setUserCreate(orderDetails.getUserCreate());
-
-        if (orderDetails.getSituation().equals(SituationEnum.COMPLETED)) {
-            updateOrder.setSituation(SituationEnum.COMPLETED);
-            emailService.sendEmail(orderDetails);
-        }
+        updateOrder.setSituation(SituationEnum.COMPLETED);
+        emailService.sendEmail(updateOrder);
 
         orderRepository.save(updateOrder);
 
@@ -72,6 +69,22 @@ public class OrderService implements OrderServiceInterface {
         stockService.stockChangeOutput(order.getQuantity(), order.getItem());
 
         return newOrder;
+    }
+
+    @Override
+    public Order cancelOrder(Order orderDetails) {
+        Order updateOrder = orderRepository.findById(orderDetails.getId())
+                .orElseThrow(() -> new ResourceNotFoundException("Order not exist with id: " + orderDetails.getId()));
+
+        updateOrder.setQuantity(0);
+        updateOrder.setSituation(SituationEnum.CANCELED);
+        emailService.sendEmail(updateOrder);
+
+        orderRepository.save(updateOrder);
+
+        stockService.stockChangeInput(orderDetails.getQuantity(), updateOrder.getItem());
+
+        return updateOrder;
     }
 
     public void deleteOrder(Order order) {

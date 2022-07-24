@@ -40,9 +40,14 @@ public class OrderManagerController {
         orderService.deleteOrder(order);
     }
 
-    @RequestMapping(value ="/update-order", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Order> updateOrder(@RequestBody Order orderDetails) {
-        return ResponseEntity.ok(orderService.orderChange(orderDetails));
+    @RequestMapping(value ="/complete-order", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Order> completeOrder(@RequestBody Order orderDetails) {
+        return ResponseEntity.ok(orderService.completeOrder(orderDetails));
+    }
+
+    @RequestMapping(value ="/cancel-order", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Order> cancelOrder(@RequestBody Order orderDetails) {
+        return ResponseEntity.ok(orderService.cancelOrder(orderDetails));
     }
 }
 
