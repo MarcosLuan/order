@@ -97,12 +97,13 @@ public class OrderService implements OrderServiceInterface {
         return updateOrder;
     }
 
-    public void deleteOrder(Order order) {
+    public Order deleteOrder(Order order) {
         Order deleteOrder = orderRepository.findById(order.getId())
                 .orElseThrow(() -> new ResourceNotFoundException("Order not exist with id: " + order.getId()));
 
         orderRepository.delete(deleteOrder);
         stockService.stockChangeInput(deleteOrder.getQuantity(), order.getItem());
+        return deleteOrder;
     }
 
     public Order updateOrder(Order orderDetails) {

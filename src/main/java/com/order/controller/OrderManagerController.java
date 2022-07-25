@@ -1,4 +1,4 @@
-package com.order.controllers;
+package com.order.controller;
 
 import com.order.model.Order;
 import com.order.repository.OrderRepository;
@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@CrossOrigin("*")
 @RestController
 @RequestMapping("/order-manager")
 public class OrderManagerController {
@@ -21,7 +20,7 @@ public class OrderManagerController {
     @Autowired
     OrderService orderService;
 
-    @RequestMapping(value = "/search-order", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/search-order", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<Order>> getOrder() {
         try {
             return ResponseEntity.ok(repository.findAll());
@@ -30,27 +29,28 @@ public class OrderManagerController {
         }
     }
 
-    @RequestMapping(value = "/create-order", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/create-order", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Order> newOrder(@RequestBody Order order) {
         return ResponseEntity.ok(orderService.newOrder(order));
     }
 
-    @RequestMapping(value ="/complete-order", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping(value ="/complete-order", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Order> completeOrder(@RequestBody Order orderDetails) {
         return ResponseEntity.ok(orderService.completeOrder(orderDetails));
     }
 
-    @RequestMapping(value ="/cancel-order", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping(value ="/cancel-order", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Order> cancelOrder(@RequestBody Order orderDetails) {
         return ResponseEntity.ok(orderService.cancelOrder(orderDetails));
     }
 
-    @RequestMapping(value = "/delete-order", method = RequestMethod.DELETE, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public void deleteOrder(@RequestBody Order order) {
+    @DeleteMapping(value = "/delete-order", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Order> deleteOrder(@RequestBody Order order) {
         orderService.deleteOrder(order);
+        return ResponseEntity.ok(order);
     }
 
-    @RequestMapping(value ="/update-order", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping(value ="/update-order", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Order> updateOrder(@RequestBody Order orderDetails) {
         return ResponseEntity.ok(orderService.updateOrder(orderDetails));
     }

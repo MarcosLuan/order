@@ -1,4 +1,4 @@
-package com.order.controllers;
+package com.order.controller;
 
 import com.order.model.Item;
 import com.order.model.Stock;
@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@CrossOrigin("*")
 @RestController
 @RequestMapping("/stock")
 public class StockController {
@@ -22,7 +21,7 @@ public class StockController {
     @Autowired
     StockService stockService;
 
-    @RequestMapping(value = "/search-stock", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/search-stock", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<Stock>> getItem() {
         try {
             return ResponseEntity.ok(repository.findAll());
@@ -31,7 +30,7 @@ public class StockController {
         }
     }
 
-    @RequestMapping(value ="/update-stock/{quantity}/{item}", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping(value ="/update-stock/{quantity}/{item}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Stock> updateStock(@PathVariable Integer quantity, @PathVariable Item item) {
         try {
             List<Stock> stockItem = repository.findByItem(item);

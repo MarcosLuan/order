@@ -11,7 +11,7 @@ public interface OrderServiceInterface {
 
     Order cancelOrder(Order order);
 
-    void deleteOrder(Order order);
+    Order deleteOrder(Order order);
 
     Order updateOrder(Order order);
 }

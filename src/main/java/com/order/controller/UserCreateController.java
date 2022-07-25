@@ -1,4 +1,4 @@
-package com.order.controllers;
+package com.order.controller;
 
 import com.order.model.UserCreate;
 import com.order.repository.UserCreateRepository;
@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@CrossOrigin("*")
 @RestController
 @RequestMapping("/user-create")
 public class UserCreateController {
@@ -21,7 +20,7 @@ public class UserCreateController {
     @Autowired
     UserCreateService userCreateService;
 
-    @RequestMapping(value = "/search-user", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/search-user", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<UserCreate>> getUser() {
         try {
             return ResponseEntity.ok(repository.findAll());
@@ -30,17 +29,18 @@ public class UserCreateController {
         }
     }
 
-    @RequestMapping(value = "/delete-user", method = RequestMethod.DELETE, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public void deleteUser(@RequestBody UserCreate userCreate) {
+    @DeleteMapping(value = "/delete-user", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<UserCreate> deleteUser(@RequestBody UserCreate userCreate) {
         repository.delete(userCreate);
+        return ResponseEntity.ok(userCreate);
     }
 
-    @RequestMapping(value = "/save-user", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/save-user", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public UserCreate postUser(@RequestBody UserCreate userCreate) {
         return repository.save(userCreate);
     }
 
-    @RequestMapping(value ="/update-user", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping(value ="/update-user", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<UserCreate> updateUser(@RequestBody UserCreate userDetails) {
         return ResponseEntity.ok(userCreateService.userCreateChange(userDetails));
     }

@@ -1,4 +1,4 @@
-package com.order.controllers;
+package com.order.controller;
 
 import com.order.model.Item;
 import com.order.repository.ItemRepository;
@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@CrossOrigin("*")
 @RestController
 @RequestMapping("/item")
 public class ItemController {
@@ -21,7 +20,7 @@ public class ItemController {
     @Autowired
     ItemService itemService;
 
-    @RequestMapping(value = "/search-item", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/search-item", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<Item>> getItem() {
         try {
             return ResponseEntity.ok(repository.findAll());
@@ -30,17 +29,18 @@ public class ItemController {
         }
     }
 
-    @RequestMapping(value = "/save-item", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/save-item", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public Item postItem(@RequestBody Item item) {
         return repository.save(item);
     }
 
-    @RequestMapping(value = "/delete-item", method = RequestMethod.DELETE, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public void deleteItem(@RequestBody Item item) {
+    @DeleteMapping(value = "/delete-item", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Item> deleteItem(@RequestBody Item item) {
         repository.delete(item);
+        return ResponseEntity.ok(item);
     }
 
-    @RequestMapping(value ="/update-item", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping(value ="/update-item", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Item> updateItem(@RequestBody Item itemDetails) {
         return ResponseEntity.ok(itemService.itemChange(itemDetails));
     }

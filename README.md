@@ -16,6 +16,9 @@ You can use Spring Boot to create Java applications that
 can be started by using java -jar or more traditional war
 deployments. We also provide a command line tool that runs “spring scripts”.
 
+### 🚀 Run REST module
+java -jar target/order-0.0.1-SNAPSHOT.jar
+
 ### 📋 Requirements
 
 Spring Boot 2.7.1 requires Java 8 and is compatible up to and including Java 18.
@@ -52,41 +55,175 @@ http://localhost:8080/swagger-ui.html
 
 ## 🔩 Requisitions Postman
 
-### Bookroom
+### Orders
 
-GET all bookrooms
+GET all Orders
 ```
-http://localhost:8082/bookroom
-```
-
-GET bookrooms by user document
-```
-http://localhost:8082/bookroom/byDocument/{user_document}
+http://localhost:8080/order-manager/search-order
 ```
 
-POST bookrooms save
+POST create order
 ```
-http://localhost:8082/bookroom/save
+http://localhost:8080/order-manager/create-order
 {
-	"userDocument":"String",
-	"userName":"String",
-	"phoneUser":"String",
-	"entryDate":"2022-07-20",
-	"departureDate":"2022-07-22"
+    "item": {
+            "id": number
+        },
+    "quantity": number,
+    "userCreate": {
+            "id": number
+        },
+    "situation": number
 }
 ```
 
-PUT change bookroom
+PUT complete order
 ```
-http://localhost:8082/bookroom/change
+http://localhost:8080/order-manager/complete-order
 {
-    "id":1
-	"userDocument":"String",
-	"userName":"String",
-	"phoneUser":"String",
-	"entryDate":"2022-07-20",
-	"departureDate":"2022-07-22"
+    "id": number,
+    "item": {
+        "id": number
+    },
+    "quantity": number,
+    "userCreate": {
+        "id": number
+    },
+    "situation": number
 }
+```
+
+PUT cancel order
+```
+http://localhost:8080/order-manager/cancel-order
+{
+    "id": number,
+    "item": {
+        "id": number
+    },
+    "quantity": number,
+    "userCreate": {
+        "id": number
+    },
+    "situation": number
+}
+```
+
+PUT update order
+```
+http://localhost:8080/order-manager/update-order
+{
+    "id": number,
+    "item": {
+        "id": number
+    },
+    "quantity": number,
+    "userCreate": {
+        "id": number
+    },
+    "situation": number
+}
+```
+
+DELETE order
+```
+http://localhost:8080/order-manager/delete-order
+{
+    "id": number,
+    "item": {
+        "id": number
+    },
+    "quantity": number,
+    "userCreate": {
+        "id": number
+    },
+    "situation": number
+}
+```
+
+### Stock
+GET Stock
+```
+http://localhost:8080/stock/search-stock
+```
+
+PUT Update Stock
+```
+http://localhost:8080/stock/update-stock/{quantity}/{item}
+```
+Note: Update Stock is used to add new items to stock
+
+### User
+GET User
+```
+http://localhost:8080/user-create/search-user
+```
+
+POST User
+```
+http://localhost:8080/user-create/save-user
+{
+    "name": string,
+    "email": string
+}
+```
+
+DELETE User
+```
+http://localhost:8080/user-create/delete-user
+{
+    "id": number
+    "name": string,
+    "email": string
+}
+```
+
+PUT User
+```
+http://localhost:8080/user-create/update-user
+{
+    "id": number
+    "name": string,
+    "email": string
+}
+```
+
+### Item
+GET Item
+```
+http://localhost:8080/item/search-item
+```
+
+POST Item
+```
+http://localhost:8080/item/save-item
+{
+	"name": "item 5"
+}
+```
+
+DELETE Item
+```
+http://localhost:8080/item/delete-item
+{
+    "id": number
+    "name": string
+}
+```
+
+PUT Item
+```
+http://localhost:8080/item/update-item
+{
+    "id": number
+    "name": string
+}
+```
+
+### Stock Movement
+GET Stock Movement
+```
+http://localhost:8080/stock-movement/stock
 ```
 
 ## 🛠️ built with
